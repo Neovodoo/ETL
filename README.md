@@ -1,3 +1,14 @@
+#Team name: Grapes
+
+# Team Members
+- Anoshenko Daniil
+- Rogoza Kirill
+- Sergey Rogachev
+- Pham Manh 
+- Allan Pravira
+
+
+
 # ETL
 ETL service for private data cleansing
 Data quality and availability is important for applications running in the framework.
