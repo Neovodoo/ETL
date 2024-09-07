@@ -6,9 +6,7 @@
 - Sergey Rogachev
 - Pham Manh 
 - Allan Pravira
-
-
-
+  
 # ETL
 ETL service for private data cleansing
 Data quality and availability is important for applications running in the framework.
@@ -17,6 +15,12 @@ A data module is described by a json-ld compatible metadata, a collection protoc
 The ETL service would extract data from internal corporate systems, cleanse, merge, anonymize, transform the data and upload it to a new version of a data module. 
 Then the module can be used by machine learning applications deployed on the framework.
 
+# Stakeholders
+ - ML projects
+ - DevOps Platforms
+ - Companies that overpassed 3rd Azure level model
+ - Data Scientists
+ - Project owners
 
 # Feature List
 - Exctract recieved data
@@ -42,6 +46,9 @@ Data transformation involves converting the cleansed and merged data into a form
 - Upload new data for future ML integration
 
 After processing, the transformed data is uploaded as a new version of the data module, making it available for future use. This feature ensures that the data is stored efficiently, with proper version control, and is accessible to machine learning applications deployed on the framework.
+
+# Constrains
+
 
 
 
