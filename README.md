@@ -1,4 +1,4 @@
-#Team name: Grapes
+# Team name: Grapes
 
 # Team Members
 - Anoshenko Daniil
