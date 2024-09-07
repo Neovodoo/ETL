@@ -26,28 +26,42 @@ Then the module can be used by machine learning applications deployed on the fra
 - Exctract recieved data
 
 This feature involves retrieving data from various internal corporate systems, such as databases (RDBMS) and cloud storage (S3). The extraction process ensures that all relevant data, along with its associated metadata, is collected and prepared for further processing.
+  Implementation Rules: Set up secure connections to various data sources; Maintain data versions for traceability; Collect Metadata;
   
 - Cleanse recieved data
 
 Data cleansing involves detecting and correcting errors or inconsistencies in the extracted data. This feature addresses common data quality issues such as missing values, duplicates, and outliers. 
+  Implementation Rules:
 
 - Merge recieved data
 
-This feature handles the integration of data from multiple sources, combining them into a unified dataset. The merging process resolves conflicts, aligns schemas, and ensures that data from different systems can work together seamlessly. 
+This feature handles the integration of data from multiple sources, combining them into a unified dataset. The merging process resolves conflicts, aligns schemas, and ensures that data from different systems can work together seamlessly.
+  Implementation Rules:
 
 - Anonymize recieved data
 
-Anonymization is the process of protecting sensitive information within the dataset. This feature ensures that personal or confidential data is anonymized to comply with privacy regulations and corporate policies. 
+Anonymization is the process of protecting sensitive information within the dataset. This feature ensures that personal or confidential data is anonymized to comply with privacy regulations and corporate policies.  
+  Implementation Rules:
 
 - Transform recieved data
 
-Data transformation involves converting the cleansed and merged data into a format suitable for specific applications. This feature includes tasks such as data enrichment, normalization, and schema mapping. The transformed data is structured in a way that makes it easy to 
+Data transformation involves converting the cleansed and merged data into a format suitable for specific applications. This feature includes tasks such as data enrichment, normalization, and schema mapping. The transformed data is structured in a way that makes it easy to load.
+  Implementation Rules:
 
 - Upload new data for future ML integration
 
 After processing, the transformed data is uploaded as a new version of the data module, making it available for future use. This feature ensures that the data is stored efficiently, with proper version control, and is accessible to machine learning applications deployed on the framework.
+  Implementation Rules:
 
 # Constrains
+- Data Privacy and Compliance
+- Scalability
+- Data Volume
+- Integration with Existing Systems
+- Resource Constraints
+- Security Requirements
+
+# Implementation rules
 
 
 
