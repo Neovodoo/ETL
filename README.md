@@ -80,8 +80,8 @@ After processing, the transformed data is uploaded as a new version of the data 
 - The system must have high availability and include fault-tolerance mechanisms
 - The system must be compatible with other systems
 - The system must comply with Federal Law No. 152 of the Russian Federation
-- The system must work with datasets of fixed preset dimension
 - The system must have a logging system for transparency of its all operational stages
+- The system must work with datasets of fixed preset dimension
 
 
 
