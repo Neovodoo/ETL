@@ -19,6 +19,7 @@ Then the module can be used by machine learning applications deployed on the fra
  - ML projects
  - DevOps Platforms
  - Companies that overpassed 3rd Azure level model
+ - Database Administrators
  - Data Scientists
  - Project owners
 
