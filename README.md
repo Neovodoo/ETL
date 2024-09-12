@@ -5,7 +5,7 @@
 - Rogoza Kirill
 - Sergey Rogachev
 - Pham Manh 
-- Allan Pravira
+- Denune Pravira
   
 # ETL
 ETL service for private data cleansing
