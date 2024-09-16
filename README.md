@@ -81,7 +81,7 @@ After processing, the transformed data is uploaded as a new version of the data 
 - The system must have high availability and include fault-tolerance mechanisms for 4xx and 5xx errors
 - The system must be compatible with other systems of MLOps framework
 - The system must comply with Federal Law No. 152 of the Russian Federation
-- The system must have a clear function-logging for transparency of its all operational stages: Exctract > Cleanse > Merge > Anonymize > Transform > Upload
+- The system must have a clear function-logging for transparency of its all operational stages: Exctract > Cleanse > Anonymize > Transform > Merge > Upload
 - The system must work with datasets of fixed preset dimension (limit in GB)
 
 
