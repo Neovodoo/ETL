@@ -55,7 +55,7 @@ Anonymization is the process of protecting sensitive information within the data
 
 ## Transform recieved data
 
-Data transformation involves converting the cleansed and merged data into a format suitable for specific applications. This feature includes tasks such as data enrichment, normalization, and schema mapping. The transformed data is structured in a way that makes it easy to load.
+Data transformation involves converting the cleansed data into a format suitable for specific applications. This feature includes tasks such as data enrichment, normalization, and schema mapping. The transformed data is structured in a way that makes it easy to load.
 ### Implementation Rules:
   - Convert data to the required format
   - Contract compliance
