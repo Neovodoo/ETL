@@ -85,4 +85,15 @@ After processing, the transformed data is uploaded as a new version of the data 
 - The system must work with datasets of fixed preset dimension (limit in GB)
 
 
+## Task 2
+https://disk.yandex.ru/i/kgWGvwgbiD02mA
+
+## Task 3
+https://disk.yandex.ru/i/anx4nloJF--Tpg
+
+## Task 5
+https://disk.yandex.ru/i/U9VDbuVX4I4mlQ
+
+## Task 6
+https://disk.yandex.ru/i/x6Fit6r9EeyDeA
 
