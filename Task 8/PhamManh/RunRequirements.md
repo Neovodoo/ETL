@@ -1,0 +1,32 @@
+## Requirements
+
+Python 3.10 or higher.
+
+---
+
+## KWIC
+
+Implemented solution of the Key Word in Context problem using the "Abstract Data Types" architectural style. 
+
+**Expected Input:**
+
+Input the text, keyword and limit number of surrounding words
+
+**Expected Result:**
+
+The program will output a sorted list of contexts, in which the keyword is centered in
+
+---
+
+## 8 Queens
+
+Implemented solution of the 8 Queens problem using the "Event-driven" architectural style.
+
+**Expected Input:**
+
+Input size of the chessboard
+
+**Expected Result:**
+
+The program will output all found solutions to the "8 Queens" problem.
+
