@@ -1,5 +1,3 @@
-from typing import List, Tuple
-
 #1: Input Filter
 def input_filter(text: str) -> List[str]:
     return text.split()
