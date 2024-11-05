@@ -11,7 +11,7 @@ def row_filter(board: List[List[str]], row: int, col: int) -> List[List[str]]:
     return new_board
 
 #3: Checks if a queen at (row, col) conflict or not
-def safety_check_filter(board: List[List[str]], row: int, col: int, n: int) -> bool:
+def queen_check_filter(board: List[List[str]], row: int, col: int, n: int) -> bool:
     #column
     for i in range(row):
         if board[i][col] == "Q":
@@ -32,12 +32,12 @@ def backtracking_filter(board: List[List[str]], row: int, n: int, solutions: Lis
         solutions.append([row[:] for row in board])  # copy of the board as a solution
     else:
         for col in range(n):
-            if safety_check_filter(board, row, col, n):
+            if queen_check_filter(board, row, col, n):
                 new_board = row_filter(board, row, col)
                 backtracking_filter(new_board, row + 1, n, solutions)
 
 #5: prints solutions
-def solution_collector_filter(solutions: List[List[List[str]]]):
+def solution_filter(solutions: List[List[List[str]]]):
     print(f"Number of solutions: {len(solutions)}\n")
     for solution in solutions:
         for row in solution:
@@ -45,11 +45,11 @@ def solution_collector_filter(solutions: List[List[List[str]]]):
         print("\n")
 
 # runcode
-def solve_n_queens(n: int = 8):
+def solve_queens(n: int = 8):
     board = initialize_filter(n)
     solutions = []
     backtracking_filter(board, 0, n, solutions)
-    solution_collector_filter(solutions)
+    solution_filter(solutions)
 
 # implementation
-solve_n_queens(8)
+solve_queens(8)
