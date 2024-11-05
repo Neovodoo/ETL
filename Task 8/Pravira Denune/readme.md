@@ -20,5 +20,5 @@ Implemented solution of the 8 Queens problem using the "Pipes and Filters" metho
 
 **Expected Result:**
 
-The program will output all found solutions to the "8 Queens" problem.
+The program will output all found solutions to the "8 Queens" problem and define queen as "Q".
 
