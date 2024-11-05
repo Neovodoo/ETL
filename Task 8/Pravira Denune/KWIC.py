@@ -8,7 +8,7 @@ def input_filter(text: str) -> List[str]:
 def keyword_finder_filter(words: List[str], keyword: str) -> List[int]:
     return [i for i, word in enumerate(words) if word == keyword]
 
-# Step 3: Context Extractor Filter - Gets context around each keyword occurrence
+#3: Gets context around each keyword occurrence
 def context_extractor_filter(words: List[str], positions: List[int], context_size: int) -> List[str]:
     contexts = []
     for pos in positions:
