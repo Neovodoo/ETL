@@ -35,7 +35,7 @@ def kwic_pipeline(text: str, keyword: str, context_size: int):
     display_filter(sorted_contexts)
 
 # implementation code
-text = "Winter is coming. The snow is falling. Let's go ice skating in the winter. The winter wind is cold and biting."
+text = "winter is coming. The snow is falling. Let's go ice skating in the winter. The winter wind is cold and biting. go ice skating in the winter. in the winter The winter wind. The winter wind is cold. Winter is coming The snow"
 keyword = "winter"
 context_size = 2
 kwic_pipeline(text, keyword, context_size)
