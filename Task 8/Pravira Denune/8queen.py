@@ -36,7 +36,7 @@ def backtracking_filter(board: List[List[str]], row: int, n: int, solutions: Lis
                 new_board = row_filter(board, row, col)
                 backtracking_filter(new_board, row + 1, n, solutions)
 
-# Step 5: Solution Collector Filter - Collects and prints solutions
+#5: prints solutions
 def solution_collector_filter(solutions: List[List[List[str]]]):
     print(f"Number of solutions: {len(solutions)}\n")
     for solution in solutions:
