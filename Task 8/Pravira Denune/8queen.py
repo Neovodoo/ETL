@@ -6,7 +6,7 @@ def initialize_filter(n: int) -> List[List[str]]:
 
 #2: Places queen "Q" in row and column
 def row_filter(board: List[List[str]], row: int, col: int) -> List[List[str]]:
-    new_board = [row[:] for row in board]  # Make a deep copy of the board
+    new_board = [row[:] for row in board]  #a copy of the board
     new_board[row][col] = "Q"
     return new_board
 
@@ -29,7 +29,7 @@ def safety_check_filter(board: List[List[str]], row: int, col: int, n: int) -> b
 #4: placing queens row by row
 def backtracking_filter(board: List[List[str]], row: int, n: int, solutions: List[List[List[str]]]):
     if row == n:
-        solutions.append([row[:] for row in board])  # Append a deep copy of the board as a solution
+        solutions.append([row[:] for row in board])  # copy of the board as a solution
     else:
         for col in range(n):
             if safety_check_filter(board, row, col, n):
