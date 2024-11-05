@@ -5,11 +5,11 @@ def input_filter(text: str) -> List[str]:
     return text.split()
 
 #2: Keyword Finder Filter
-def keyword_finder_filter(words: List[str], keyword: str) -> List[int]:
+def keyword_filter(words: List[str], keyword: str) -> List[int]:
     return [i for i, word in enumerate(words) if word == keyword]
 
 #3: Gets context around each keyword occurrence
-def context_extractor_filter(words: List[str], positions: List[int], context_size: int) -> List[str]:
+def context_filter(words: List[str], positions: List[int], context_size: int) -> List[str]:
     contexts = []
     for pos in positions:
         start = max(0, pos - context_size)
@@ -29,8 +29,8 @@ def display_filter(contexts: List[str]):
 # put all function
 def kwic_pipeline(text: str, keyword: str, context_size: int):
     words = input_filter(text)
-    positions = keyword_finder_filter(words, keyword)
-    contexts = context_extractor_filter(words, positions, context_size)
+    positions = keyword_filter(words, keyword)
+    contexts = context_filter(words, positions, context_size)
     sorted_contexts = sorter_filter(contexts)
     display_filter(sorted_contexts)
 
