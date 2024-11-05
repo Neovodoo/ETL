@@ -1,45 +1,55 @@
 from typing import List
 
-#1: Start with an empty board
-def initialize_filter(n: int) -> List[int]:
-    return [-1] * n  #Use -1 for no queen is placed in any column for each row
+#1: Creates an empty board
+def initialize_filter(n: int) -> List[List[str]]:
+    return [["." for _ in range(n)] for _ in range(n)]
 
-#2: Place a queen in a new row
-def queen_filter(board: List[int], row: int, col: int) -> List[int]:
-    new_board = board[:]
-    new_board[row] = col
+#2: Places queen "Q" in row and column
+def row_filter(board: List[List[str]], row: int, col: int) -> List[List[str]]:
+    new_board = [row[:] for row in board]  # Make a deep copy of the board
+    new_board[row][col] = "Q"
     return new_board
 
-#3: Check if placing a queen at (row, col) is safe
-def queen_check_filter(board: List[int], row: int) -> bool:
+#3: Checks if a queen at (row, col) conflict or not
+def safety_check_filter(board: List[List[str]], row: int, col: int, n: int) -> bool:
+    #column
     for i in range(row):
-        # Check column and diagonal if there is some conflicts
-        if board[i] == board[row] or abs(board[i] - board[row]) == abs(i - row):
+        if board[i][col] == "Q":
+            return False
+    #left diagonal
+    for i, j in zip(range(row - 1, -1, -1), range(col - 1, -1, -1)):
+        if board[i][j] == "Q":
+            return False
+    #right diagonal
+    for i, j in zip(range(row - 1, -1, -1), range(col + 1, n)):
+        if board[i][j] == "Q":
             return False
     return True
 
-#4: Recursively try placing queens row by row
-def backtracking_filter(board: List[int], row: int, n: int, solutions: List[List[int]]):
+#4: placing queens row by row
+def backtracking_filter(board: List[List[str]], row: int, n: int, solutions: List[List[List[str]]]):
     if row == n:
-        solutions.append(board[:])  # the solution show up
+        solutions.append([row[:] for row in board])  # Append a deep copy of the board as a solution
     else:
         for col in range(n):
-            new_board = queen_filter(board, row, col)
-            if queen_check_filter(new_board, row):
+            if safety_check_filter(board, row, col, n):
+                new_board = row_filter(board, row, col)
                 backtracking_filter(new_board, row + 1, n, solutions)
 
-#5: check the solutions for the puzzle
-def solution_collector_filter(solutions: List[List[int]]):
-    print(f"Number of solutions: {len(solutions)}")
+# Step 5: Solution Collector Filter - Collects and prints solutions
+def solution_collector_filter(solutions: List[List[List[str]]]):
+    print(f"Number of solutions: {len(solutions)}\n")
     for solution in solutions:
-        print(solution)
+        for row in solution:
+            print(" ".join(row))
+        print("\n")
 
-# put function
-def solve_queens(n: int):
+# runcode
+def solve_n_queens(n: int = 8):
     board = initialize_filter(n)
     solutions = []
     backtracking_filter(board, 0, n, solutions)
     solution_collector_filter(solutions)
 
 # implementation
-solve_queens(8)
+solve_n_queens(8)
