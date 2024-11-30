@@ -3,6 +3,8 @@ package org.example.etlservice.repository;
 import org.example.etlservice.model.ETLProcess;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ETLProcessRepository extends JpaRepository<ETLProcess, Long> {
+import java.util.UUID;
+
+public interface ETLProcessRepository extends JpaRepository<ETLProcess, UUID> {
     ETLProcess findByEtlProcessId(String etlProcessId);
 }

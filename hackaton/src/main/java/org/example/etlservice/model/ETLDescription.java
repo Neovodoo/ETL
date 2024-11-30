@@ -3,20 +3,23 @@ package org.example.etlservice.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
 public class ETLDescription {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    private String description; // Описание процесса
+    private String description;
 
-    private String source; // Источник данных
-    private String target; // Место назначения данных
-
-    @OneToMany(mappedBy = "etlDescription")
+    @OneToMany(mappedBy = "etlDescription", cascade = CascadeType.ALL)  // Cascade saving of ETLProcess
     private List<ETLProcess> etlProcesses;
+
+    @OneToMany(mappedBy = "etlDescription", cascade = CascadeType.ALL) // Cascade saving of ETLStage
+    private List<ETLStage> stages = new ArrayList<>(); // Initialize the stages list
+
 }
