@@ -14,7 +14,6 @@ public class ETLProcess {
 
     private String etlProcessId; // Идентификатор ETL процесса
     private String status; // Статус процесса (IN_PROGRESS, COMPLETED, FAILED)
-    private String description; // Описание процесса
 
     @ManyToOne(cascade = CascadeType.ALL)
     private ETLDescription etlDescription; // Описание процесса ETL

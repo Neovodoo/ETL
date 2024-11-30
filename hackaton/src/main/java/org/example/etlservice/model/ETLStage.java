@@ -22,5 +22,6 @@ public class ETLStage {
     private Map<String, Object> parameters; // Parameters specific to each stage
 
     @ManyToOne
+    @JoinColumn(name = "etl_description_id", referencedColumnName = "id")
     private ETLDescription etlDescription; // Linking to the ETLDescription
 }

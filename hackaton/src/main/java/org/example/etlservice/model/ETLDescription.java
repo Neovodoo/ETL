@@ -14,6 +14,7 @@ public class ETLDescription {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(length = 22550)
     private String description;
 
     @OneToMany(mappedBy = "etlDescription", cascade = CascadeType.ALL)  // Cascade saving of ETLProcess

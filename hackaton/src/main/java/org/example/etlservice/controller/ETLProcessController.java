@@ -26,6 +26,8 @@ public class ETLProcessController {
         // Deserialize the etl_process part into ETLDescription
         ETLDescription etlDescription = new ObjectMapper().convertValue(etlProcessData, ETLDescription.class);
 
+        etlDescription.setDescription(requestBody.get("etl_process").toString());
+
         if (etlDescription == null || etlDescription.getStages() == null) {
             return ResponseEntity.badRequest().body("ETL Description or stages are missing.");
         }
