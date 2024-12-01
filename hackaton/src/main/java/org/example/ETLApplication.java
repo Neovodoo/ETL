@@ -8,7 +8,7 @@ public class ETLApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ETLApplication.class, args);
-        System.out.println("Приложение работает");
+        System.out.println("App is working");
     }
 
 }

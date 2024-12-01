@@ -3,12 +3,10 @@ package org.example.etlservice.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-@Data
 @Entity
+@Data
 public class ETLDescription {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -16,11 +14,4 @@ public class ETLDescription {
 
     @Column(length = 22550)
     private String description;
-
-    @OneToMany(mappedBy = "etlDescription", cascade = CascadeType.ALL)  // Cascade saving of ETLProcess
-    private List<ETLProcess> etlProcesses;
-
-    @OneToMany(mappedBy = "etlDescription", cascade = CascadeType.ALL) // Cascade saving of ETLStage
-    private List<ETLStage> stages = new ArrayList<>(); // Initialize the stages list
-
 }
