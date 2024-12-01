@@ -2,44 +2,59 @@ package org.example.etlservice.controller;
 
 import org.example.etlservice.model.Account;
 import org.example.etlservice.service.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/access/{accessId}/accounts")
 public class AccountController {
-    private final AccountService accountService;
 
-    public AccountController(AccountService accountService) {
-        this.accountService = accountService;
-    }
+    @Autowired
+    private AccountService accountService;
 
-    @GetMapping
-    public ResponseEntity<List<Account>> getAccounts(@PathVariable String accessId) {
-        return ResponseEntity.ok(accountService.getAccounts(accessId));
-    }
-
+    /**
+     * Create a new account.
+     */
     @PostMapping
-    public ResponseEntity<Account> createAccount(@PathVariable String accessId, @RequestBody Account account) {
-        return ResponseEntity.status(201).body(accountService.createAccount(accessId, account));
+    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
+        Account createdAccount = accountService.createAccount(account);
+        return ResponseEntity.ok(createdAccount);
     }
 
     @GetMapping("/{accountId}")
-    public ResponseEntity<Account> getAccountDetails(@PathVariable String accessId, @PathVariable UUID accountId) {
-        return ResponseEntity.ok(accountService.getAccountDetails(accessId, accountId));
+    public ResponseEntity<Account> getAccountById(@PathVariable UUID accountId) {
+        Optional<Account> account = accountService.getAccountById(accountId);
+        return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/{accountId}/check-access")
-    public ResponseEntity<Boolean> checkAccess(@PathVariable String accessId, @PathVariable UUID accountId, @RequestBody String permissionName) {
-        return ResponseEntity.ok(accountService.checkAccess(accessId, accountId, permissionName));
+    @GetMapping
+    public ResponseEntity<List<Account>> getAllAccounts() {
+        List<Account> accounts = accountService.getAllAccounts();
+        return ResponseEntity.ok(accounts);
+    }
+
+    @PutMapping("/{accountId}")
+    public ResponseEntity<Account> updateAccount(@PathVariable UUID accountId, @RequestBody Account accountDetails) {
+        try {
+            Account updatedAccount = accountService.updateAccount(accountId, accountDetails);
+            return ResponseEntity.ok(updatedAccount);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{accountId}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable String accessId, @PathVariable UUID accountId) {
-        accountService.deleteAccount(accessId, accountId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteAccount(@PathVariable UUID accountId) {
+        try {
+            accountService.deleteAccount(accountId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
