@@ -33,4 +33,8 @@ public class RoleService {
     public void deleteRole(UUID roleId) {
         roleRepository.deleteById(roleId);
     }
+
+    public boolean checkRole(String roleName) {
+        return roleRepository.findByName(roleName).isPresent();
+    }
 }

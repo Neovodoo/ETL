@@ -1,46 +1,68 @@
 package org.example.etlservice.service;
 
 import org.example.etlservice.model.Account;
+import org.example.etlservice.model.Role;
+import org.example.etlservice.model.Permission;
 import org.example.etlservice.repository.AccountRepository;
+import org.example.etlservice.repository.PermissionRepository;
+import org.example.etlservice.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 @Service
 public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private PermissionRepository permissionRepository;
 
-    /**
-     * Creates a new account.
-     *
-     * @param account the account to create
-     * @return the created account
-     */
+    public List<Account> getAllAccounts() {
+        return accountRepository.findAll();
+    }
+
     public Account createAccount(Account account) {
         return accountRepository.save(account);
     }
 
-    /**
-     * Assigns a role to an account.
-     *
-     * @param account the account to update
-     * @param roleId  the role ID to assign
-     * @return the updated account
-     */
-    public Account assignRoleToAccount(Account account, UUID roleId) {
-        account.setRoleId(roleId);
-        return accountRepository.save(account);
+    public Account assignRoleToAccount(UUID accountID, UUID roleId) {
+        Optional<Account> accountOpt = accountRepository.findById(accountID);
+        if (accountOpt.isPresent()) {
+            Account account = accountOpt.get();
+            account.setRoleId(roleId);
+            return accountRepository.save(account);
+        } else {
+            throw new RuntimeException("Account not found with ID: " + accountID);
+        }
     }
 
-    /**
-     * Deletes an account by its ID and access ID.
-     *
-     * @param accountId the ID of the account
-     */
     public void deleteAccount(UUID accountId) {
         accountRepository.deleteById(accountId);
+    }
+
+    public Optional<Account> getAccount(UUID accountId)
+    {
+        return accountRepository.findById(accountId);
+    }
+
+    public boolean checkAccountPermission(UUID accountId, String permissionName) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found with ID: " + accountId));
+
+        UUID roleId = account.getRoleId();
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found with ID: " + roleId));
+
+        return role.getPermissions().stream()
+                .anyMatch(permissionId -> {
+                    Permission permission = permissionRepository.findById(permissionId)
+                            .orElseThrow(() -> new IllegalArgumentException("Permission not found with ID: " + permissionId));
+                    return permission.getName().equalsIgnoreCase(permissionName);
+                });
     }
 }
