@@ -1,60 +1,44 @@
 package org.example.etlservice.controller;
 
 import org.example.etlservice.model.Account;
-import org.example.etlservice.service.AccountService;
+import org.example.etlservice.repository.AccountRepository;
+import org.example.etlservice.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/access/{accessId}/accounts")
+@RequestMapping("/access/{accessId}")
 public class AccountController {
-
     @Autowired
-    private AccountService accountService;
+    private AccountRepository accountRepository;
+    @Autowired
+    private RoleService roleService;
 
-    /**
-     * Create a new account.
-     */
-    @PostMapping
-    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
-        Account createdAccount = accountService.createAccount(account);
-        return ResponseEntity.ok(createdAccount);
+    // Get account details
+    @GetMapping("/accounts/{accountId}")
+    public ResponseEntity<Account> getAccountById(
+            @PathVariable UUID accountId) {
+        return ResponseEntity.status(201).body(accountRepository.getById(accountId));
     }
 
-    @GetMapping("/{accountId}")
-    public ResponseEntity<Account> getAccountById(@PathVariable UUID accountId) {
-        Optional<Account> account = accountService.getAccountById(accountId);
-        return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    // Create a new account
+    @PostMapping("/accounts")
+    public ResponseEntity<Account> createAccount(
+            @PathVariable String accessId,
+            @RequestBody Account account) {
+        Account savedAccount = accountRepository.save(account);
+        return ResponseEntity.status(201).body(savedAccount);
     }
 
-    @GetMapping
-    public ResponseEntity<List<Account>> getAllAccounts() {
-        List<Account> accounts = accountService.getAllAccounts();
-        return ResponseEntity.ok(accounts);
-    }
-
-    @PutMapping("/{accountId}")
-    public ResponseEntity<Account> updateAccount(@PathVariable UUID accountId, @RequestBody Account accountDetails) {
-        try {
-            Account updatedAccount = accountService.updateAccount(accountId, accountDetails);
-            return ResponseEntity.ok(updatedAccount);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @DeleteMapping("/{accountId}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable UUID accountId) {
-        try {
-            accountService.deleteAccount(accountId);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    // Delete an account
+    @DeleteMapping("/accounts/{accountId}")
+    public ResponseEntity<Void> deleteAccount(
+            @PathVariable UUID accountId) {
+        accountRepository.deleteById(accountId);
+        return ResponseEntity.noContent().build();
     }
 }

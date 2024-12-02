@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.UUID;
-import java.util.List;
 
 
 @Entity
@@ -14,8 +13,7 @@ public class Permission {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ElementCollection
-    private List<String> permissions;
+    private String name;
 
     // Getters and Setters
 }

@@ -2,19 +2,18 @@ package org.example.etlservice.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.util.UUID;
 import java.util.List;
+import java.util.UUID;
 
-
-@Entity
 @Data
+@Entity
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private String name;
-    private List<UUID> permissions;
 
-    // Getters and Setters
+    private String name;
+
+    @ElementCollection
+    private List<UUID> permissions;
 }
