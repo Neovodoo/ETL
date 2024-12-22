@@ -1,0 +1,1619 @@
+openapi: 3.0.0
+info:
+  title: ETL Process API
+  version: '2.0'
+  description: API for managing ETL Processes
+servers:
+  - url: /api_ETL_Service_v1
+tags:
+  - name: ETL_Process
+    description: Methods of the main ETL Process
+  - name: PreviousDatasetsService
+    description: Access to Petstore orders
+  - name: ConfigureSources
+    description: Configuration of sources for ETL Process
+paths:
+  /etlProcess/{etlProcessId}/{etlProcessType}/etl-descriptions/{etlDescriptionId}/jobs:
+    post:
+      tags:
+        - ETL_Process
+      summary: Start a new ETL job
+      operationId: startEtlJob
+      parameters:
+        - name: etlDescriptionId
+          in: path
+          description: ID of the ETL description
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: etlProcessId
+          in: path
+          description: ID of the ETL Process
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: etlProcessType
+          in: path
+          required: true
+          schema:
+            type: string
+            format: string
+      requestBody:
+        description: ETL job initiation parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartJobRequest'
+      responses:
+        '201':
+          description: Job started successfully
+          headers:
+            Location:
+              description: URL of the created job
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StartJobResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /etlProcess/{etlProcessId}/etl-descriptions/{etlDescriptionId}/jobs/{jobId}:
+    get:
+      tags:
+        - ETL_Process
+      summary: Get ETL job status
+      operationId: getJobStatus
+      parameters:
+        - name: etlDescriptionId
+          in: path
+          description: ID of the ETL description
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: etlProcessId
+          in: path
+          description: ID of the ETL Process
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: jobId
+          in: path
+          description: ID of the ETL job
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Job status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobStatus'
+        '404':
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - ETL_Process
+      summary: Stop an ETL job
+      operationId: deleteJob
+      parameters:
+        - name: etlDescriptionId
+          in: path
+          description: ID of the ETL description
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: etlProcessId
+          in: path
+          description: ID of the ETL Process
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: jobId
+          in: path
+          description: ID of the ETL job to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Job deleted successfully
+        '404':
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - ETL_Process
+      summary: Update an ETL job
+      operationId: updateJob
+      parameters:
+        - name: etlDescriptionId
+          in: path
+          description: ID of the ETL description
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: etlProcessId
+          in: path
+          description: ID of the ETL Process
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: jobId
+          in: path
+          description: ID of the ETL job
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Job fields to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobUpdateRequest'
+      responses:
+        '200':
+          description: Job updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobStatus'
+        '404':
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /etlProcess/{etlProcessId}/etl-descriptions/{etlDescriptionId}/jobs/{jobId}/data:
+    get:
+      tags:
+        - ETL_Process
+      summary: Get data to save
+      operationId: getJobDataToSave
+      parameters:
+        - name: etlDescriptionId
+          in: path
+          description: ID of the ETL description
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: etlProcessId
+          in: path
+          description: ID of the ETL Process
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: jobId
+          in: path
+          description: ID of the ETL job
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Data retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobData'
+        '404':
+          description: Job or data not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /etlProcess/{etlProcessId}/etl-descriptions/{etlDescriptionId}/jobs/{jobId}/logs:
+    get:
+      tags:
+        - ETL_Process
+      summary: Get job logs
+      operationId: getJobLogs
+      parameters:
+        - name: etlDescriptionId
+          in: path
+          description: ID of the ETL description
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: etlProcessId
+          in: path
+          description: ID of the ETL Process
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: jobId
+          in: path
+          description: ID of the ETL job
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Logs retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobLogs'
+        '404':
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /etlProcess/{etlProcessId}/etl-descriptions:
+    post:
+      tags:
+        - ETL_Process
+      summary: Create a new ETL description
+      operationId: createEtlDescription
+      parameters:
+        - name: etlProcessId
+          in: path
+          description: ID of the ETL Process
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: ETL description parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EtlDescriptionRequest'
+      responses:
+        '201':
+          description: ETL description created
+          headers:
+            Location:
+              description: URL of the created ETL description
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EtlDescriptionResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /etlProcess/{etlProcessId}/etl-descriptions/{etlDescriptionId}:
+    get:
+      tags:
+        - ETL_Process
+      summary: Get ETL description
+      operationId: getEtlDescription
+      parameters:
+        - name: etlProcessId
+          in: path
+          description: ID of the ETL Process
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: etlDescriptionId
+          in: path
+          description: ID of the ETL description
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: ETL description retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EtlDescription'
+        '404':
+          description: ETL description not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - ETL_Process
+      summary: Update ETL description
+      operationId: updateEtlDescription
+      parameters:
+        - name: etlProcessId
+          in: path
+          description: ID of the ETL Process
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: etlDescriptionId
+          in: path
+          description: ID of the ETL description to update
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Updated ETL description parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EtlDescriptionRequest'
+      responses:
+        '200':
+          description: ETL description updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EtlDescription'
+        '404':
+          description: ETL description not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - ETL_Process
+      summary: Delete ETL description
+      operationId: deleteEtlDescription
+      parameters:
+        - name: etlProcessId
+          in: path
+          description: ID of the ETL Process
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: etlDescriptionId
+          in: path
+          description: ID of the ETL description to delete
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: ETL description deleted
+        '404':
+          description: ETL description not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                
+  # Previous datasets
+  /previousDatasetsService/{prevDatasetServId}/datasets:
+    get:
+      tags:
+        - PreviousDatasetsService
+      summary: List all datasets
+      operationId: listDatasets
+      parameters:
+        - name: prevDatasetServId
+          in: path
+          description: ID of the previous dataset storage service
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: A list of datasets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetListResponse'
+    post:
+      tags:
+        - PreviousDatasetsService
+      summary: Save a new dataset
+      operationId: saveDataset
+      parameters:
+        - name: prevDatasetServId
+          in: path
+          description: ID of the previous dataset storage service
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Dataset to save
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetRequest'
+      responses:
+        '201':
+          description: Dataset saved successfully
+          headers:
+            Location:
+              description: URL of the created dataset
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetSaveResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  # Configure Sources
+  /configurations:
+    post:
+      tags:
+        - ConfigureSources
+      summary: Create a new Configuration Manager
+      operationId: createConfigurationManager
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigurationManager'
+      responses:
+        '201':
+          description: Configuration Manager created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigurationManager'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - ConfigureSources
+      summary: Retrieve all Configuration Managers
+      operationId: getConfigurationManagers
+      responses:
+        '200':
+          description: List of Configuration Managers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConfigurationManager'
+  /configurations/{id}:
+    get:
+      tags:
+        - ConfigureSources
+      summary: Retrieve a specific Configuration Manager by ID
+      operationId: getConfigurationManagerById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Configuration Manager ID
+      responses:
+        '200':
+          description: Configuration Manager details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigurationManager'
+        '404':
+          description: Configuration Manager not found
+    delete:
+      tags:
+        - ConfigureSources
+      summary: Delete a specific Configuration Manager by ID
+      operationId: deleteConfigurationManager
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Configuration Manager ID
+      responses:
+        '204':
+          description: Configuration Manager deleted successfully
+        '404':
+          description: Configuration Manager not found
+  /configurations/{Id}/config_data:
+    post:
+      tags:
+        - ConfigureSources
+      summary: Add a configuration to a specific Configuration Manager
+      operationId: addConfiguration
+      parameters:
+        - name: managerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Configuration Manager ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigurationData'
+      responses:
+        '201':
+          description: Configuration added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigurationData'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - ConfigureSources
+      summary: Retrieve all configurations for a specific Configuration Manager
+      operationId: getConfigurationsForManager
+      parameters:
+        - name: managerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Configuration Manager ID
+      responses:
+        '200':
+          description: List of configurations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConfigurationData'
+  /configurations/{Id}/config_data/{configId}/connection-status:
+    get:
+      tags:
+        - ConfigureSources
+      summary: Retrieve the connection status for a specific configuration
+      operationId: getConnectionStatusForConfiguration
+      parameters:
+        - name: managerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Configuration Manager ID
+        - name: configId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Configuration ID
+      responses:
+        '200':
+          description: Connection status for the specified configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionStatus'
+        '404':
+          description: Configuration or connection status not found
+  # Access
+  /access/{accessId}/accounts:
+    get:
+      parameters:
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Account'
+                type: array
+          description: A list of accounts
+      summary: Get a list of all accounts
+      tags:
+      - Accounts
+    post:
+      parameters:
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  description: Name of the account
+                  type: string
+                roleId:
+                  description: ID of the role assigned to the account
+                  format: uuid
+                  type: string
+              type: object
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+          description: Account created successfully
+      summary: Create a new account
+      tags:
+      - Accounts
+  /access/{accessId}/accounts/{accountId}:
+    delete:
+      parameters:
+      - in: path
+        name: accountId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Account deleted successfully
+      summary: Delete a specific account
+      tags:
+      - Accounts
+    get:
+      parameters:
+      - in: path
+        name: accountId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+          description: Account details
+      summary: Get details of a specific account
+      tags:
+      - Accounts
+    post:
+      parameters:
+      - in: path
+        name: accountId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                roleId:
+                  description: ID of the role to assign
+                  format: uuid
+                  type: string
+              type: object
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: Role assigned successfully
+      summary: Assign a role to an account
+      tags:
+      - Accounts
+  /access/{accessId}/accounts/{accountId}/check-access:
+    post:
+      description: Check if the account has access to a specific permission.
+      parameters:
+      - description: ID of the account
+        in: path
+        name: accountId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                permissionName:
+                  description: Name of the permission to check
+                  type: string
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  hasAccess:
+                    description: Whether the account has access to the specified permission
+                    type: boolean
+                type: object
+          description: Access check result
+        '404':
+          description: Account, role, or permission not found
+      summary: Check access for a specific permission
+      tags:
+      - Accounts
+  /access/{accessId}/accounts/{accountId}/roles:
+    get:
+      parameters:
+      - in: path
+        name: accountId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: Role assigned to the account
+      summary: Get the role assigned to an account
+      tags:
+      - Roles
+  /access/{accessId}/accounts/{accountId}/roles/{roleId}:
+    delete:
+      parameters:
+      - in: path
+        name: accountId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - in: path
+        name: roleId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Role removed successfully
+      summary: Remove a role from an account
+      tags:
+      - Roles
+  /access/{accessId}/permissions:
+    post:
+      parameters:
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  description: Name of the permission
+                  type: string
+              type: object
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+          description: Permission created successfully
+      summary: Create a new system permission
+      tags:
+      - Permissions
+  /access/{accessId}/permissions/{permissionId}:
+    delete:
+      parameters:
+      - in: path
+        name: permissionId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Permission deleted successfully
+      summary: Delete a system permission
+      tags:
+      - Permissions
+    put:
+      parameters:
+      - in: path
+        name: permissionId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Permission'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+          description: Permission updated successfully
+      summary: Update a system permission
+      tags:
+      - Permissions
+  /access/{accessId}/roles:
+    post:
+      parameters:
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: Role created successfully
+      summary: Create a new system role
+      tags:
+      - Roles
+  /access/{accessId}/roles/{roleId}:
+    delete:
+      parameters:
+      - in: path
+        name: roleId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Role deleted successfully
+      summary: Delete a system role
+      tags:
+      - Roles
+    put:
+      parameters:
+      - in: path
+        name: roleId
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - description: Access ID to identify the resource
+        in: path
+        name: accessId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: Role updated successfully
+      summary: Update a system role
+      tags:
+      - Roles
+  # Monitoring
+  /monitorings:
+    get:
+      tags:
+        - Monitoring
+      summary: Get a list of all monitorings
+      description: Retrieve all monitoring instances.
+      responses:
+        '200':
+          description: A list of monitorings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Monitoring'
+        '500':
+          $ref: '#/components/responses/ErrorResponse'
+  /monitorings/{monitoringId}:
+    get:
+      tags:
+        - Monitoring
+      summary: Get details of a specific monitoring
+      parameters:
+        - name: monitoringId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: UUID of the monitoring instance
+      responses:
+        '200':
+          description: Details of the monitoring
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitoring'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+    delete:
+      tags:
+        - Monitoring
+      summary: Delete a specific monitoring
+      description: Delete the monitoring instance with the given ID.
+      parameters:
+        - name: monitoringId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: UUID of the monitoring instance
+      responses:
+        '204':
+          description: Monitoring instance deleted successfully
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+  /monitorings/{monitoringId}/logs:
+    get:
+      tags:
+        - Logs
+      summary: Get logs for a specific monitoring
+      description: Retrieve all stage-related information (logs) for a specific monitoring.
+      parameters:
+        - name: monitoringId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: UUID of the monitoring instance
+      responses:
+        '200':
+          description: Run details (logs) for the specified monitoring
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Run'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+  /monitorings/{monitoringId}/fill-logs:
+    post:
+      tags:
+        - Logs
+      summary: Fill logs for a specific stage in monitoring
+      description: Add logs for a specific monitoring stage.
+      parameters:
+        - name: monitoringId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: UUID of the monitoring instance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                logs:
+                  type: string
+                  description: Logs data to be added
+                  example: "Log entry 1\nLog entry 2"
+                stageType:
+                  type: string
+                  description: Type of the stage (e.g., extraction, transformation, etc.)
+                  example: "extraction"
+      responses:
+        '200':
+          description: Logs filled successfully
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /monitorings/{monitoringId}/reports:
+    get:
+      tags:
+        - Reports
+      summary: Get reports for a specific monitoring
+      description: Retrieve a report for a specific monitoring instance. Depending on the report type (`Detailed` or `Overall`), the corresponding schema will be returned.
+      parameters:
+        - name: monitoringId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: UUID of the monitoring instance
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [Detailed, Overall]
+            description: Type of report to retrieve (Detailed or Overall).
+      responses:
+        '200':
+          description: The report for the monitoring
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [Detailed, Overall]
+                    description: Type of the report
+                  data:
+                    oneOf:
+                      - $ref: '#/components/schemas/DetailedReport'
+                      - $ref: '#/components/schemas/OverallReport'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+    post:
+      tags:
+        - Reports
+      summary: Generate a new report for a specific monitoring
+      parameters:
+        - name: monitoringId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: UUID of the monitoring instance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [Detailed, Overall]
+                  description: The type of report to generate
+      responses:
+        '201':
+          description: Report generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+                
+components:
+  schemas:
+    StartJobRequest:
+      type: object
+      required:
+        - etlDescriptionId
+        - actorId
+      properties:
+        etlDescriptionId:
+          type: string
+          format: uuid
+          description: ID of the ETL description to use
+        actorId:
+          type: string
+          format: uuid
+          description: ID of the actor initiating the job
+        etlProcessType:
+          type: string
+    StartJobResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+          format: uuid
+          description: ID of the started job
+        status:
+          type: string
+          description: Status of the job
+    JobStatus:
+      type: object
+      properties:
+        jobId:
+          type: string
+          format: uuid
+          description: ID of the ETL job
+        status:
+          type: string
+          description: Current status of the job
+        currentStep:
+          type: string
+          description: Current ETL step being executed
+        startedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the job was started
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of the last update
+        _links:
+          type: object
+          description: Hypermedia links to related resources
+    JobUpdateRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [Started, InProgress, Stopped, Restarted, Completed]
+    EtlDescriptionRequest:
+      type: object
+      required:
+        - extractionParameters
+        - cleanseParameters
+        - anonymizationParameters
+        - transformationParameters
+        - mergeParameters
+        - outputParameters
+      properties:
+        extractionParameters:
+          type: array
+          items:
+            type: string
+          description: Parameters for the extraction step
+        cleanseParameters:
+          type: array
+          items:
+            type: string
+          description: Parameters for the cleansing step
+        anonymizationParameters:
+          type: array
+          items:
+            type: string
+          description: Parameters for the anonymization step
+        transformationParameters:
+          type: array
+          items:
+            type: string
+          description: Parameters for the transformation step
+        mergeParameters:
+          type: array
+          items:
+            type: string
+          description: Parameters for the merging step
+        outputParameters:
+          type: string
+          description: Parameters for the output step
+    EtlDescriptionResponse:
+      type: object
+      properties:
+        etlDescriptionId:
+          type: string
+          format: uuid
+          description: ID of the created ETL description
+    EtlDescription:
+      allOf:
+        - $ref: '#/components/schemas/EtlDescriptionRequest'
+        - type: object
+          properties:
+            etlDescriptionId:
+              type: string
+              format: uuid
+              description: ID of the ETL description
+    JobData:
+      type: object
+      properties:
+        jobId:
+          type: string
+          format: uuid
+          description: ID of the ETL job
+        data:
+          type: string
+          format: byte
+          description: Base64-encoded data
+    JobLogs:
+      type: object
+      properties:
+        jobId:
+          type: string
+          format: uuid
+          description: ID of the ETL job
+        logs:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: date-time
+                description: Log timestamp
+              message:
+                type: string
+                description: Log message
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: Error code
+        message:
+          type: string
+          description: Error message
+      example:
+        code: 404
+        message: "Resource not found"
+    Dataset:
+      type: object
+      properties:
+        datasetId:
+          type: string
+          format: uuid
+          description: ID of the dataset
+        name:
+          type: string
+          description: Name of the dataset
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the dataset was created
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Additional metadata for the dataset
+    DatasetListResponse:
+      type: object
+      properties:
+        datasets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dataset'
+    DatasetRequest:
+      type: object
+      required:
+        - name
+        - data
+      properties:
+        name:
+          type: string
+          description: Name of the dataset
+        data:
+          type: string
+          format: byte
+          description: Base64-encoded data
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Additional metadata for the dataset
+    DatasetSaveResponse:
+      type: object
+      properties:
+        datasetId:
+          type: string
+          format: uuid
+          description: ID of the created dataset
+        message:
+          type: string
+          description: Success message
+    ConfigurationManager:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the Configuration Manager
+        name:
+          type: string
+          description: Name of the Configuration Manager
+        actor:
+          type: string
+          description: Associated account or actor
+      required:
+        - id
+        - name
+    ConfigurationData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the configuration
+        databaseConfig:
+          $ref: '#/components/schemas/DatabaseConfig'
+        s3Config:
+          $ref: '#/components/schemas/S3Config'
+    ConnectionStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Configuration ID associated with this connection status
+        status:
+          type: string
+          enum: [connected, disconnected]
+          description: Connection status for the configuration
+    DatabaseConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the database configuration
+        pathForDatabaseUrl:
+          type: array
+          items:
+            type: string
+        pathForDatabaseLogin:
+          type: array
+          items:
+            type: string
+        pathForDatabasePassword:
+          type: array
+          items:
+            type: string
+    S3Config:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the S3 configuration
+        pathForS3AccessData:
+          type: array
+          items:
+            type: string
+        pathForS3User:
+          type: array
+          items:
+            type: string
+        pathForS3Password:
+          type: array
+          items:
+            type: string
+    Account:
+      properties:
+        id:
+          format: uuid
+          type: string
+        name:
+          description: Name of the account
+          type: string
+        roleId:
+          description: ID of the role assigned to the account
+          format: uuid
+          type: string
+        token:
+          description: Token for account authentication
+          type: string
+      type: object
+    Permission:
+      properties:
+        id:
+          format: uuid
+          type: string
+        name:
+          description: Name of the permission
+          type: string
+      type: object
+    Role:
+      properties:
+        id:
+          format: uuid
+          type: string
+        name:
+          description: Name of the role
+          type: string
+        permissions:
+          description: List of permission ids
+          items:
+            format: uuid
+            type: string
+          type: array
+      type: object
+    Monitoring:
+      type: object
+      properties:
+        monitoringId:
+          type: string
+          format: uuid
+          description: Unique identifier of the monitoring
+        status:
+          type: string
+          description: Status of the monitoring
+          example: "active"
+    Report:
+      type: object
+      properties:
+        reportId:
+          type: string
+          format: uuid
+          description: Unique identifier of the report
+        type:
+          type: string
+          enum: [Detailed, Overall]
+          description: The type of the report
+        details:
+          type: string
+          description: Report details
+    Run:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier of the run
+        extractionStageInfo:
+          type: string
+          description: Information about the extraction stage
+        cleansedStageInfo:
+          type: string
+          description: Information about the cleansed stage
+        anonymizationStageInfo:
+          type: string
+          description: Information about the anonymization stage
+        transformationStageInfo:
+          type: string
+          description: Information about the transformation stage
+        mergeStageInfo:
+          type: string
+          description: Information about the merge stage
+        outputStageInfo:
+          type: string
+          description: Information about the output stage
+    DetailedReport:
+      type: object
+      properties:
+        extractionReport:
+          type: string
+          description: Detailed information about the extraction stage
+        cleanseReport:
+          type: string
+          description: Detailed information about the cleansing stage
+        anonymizationReport:
+          type: string
+          description: Detailed information about the anonymization stage
+        transformationReport:
+          type: string
+          description: Detailed information about the transformation stage
+        mergeReport:
+          type: string
+          description: Detailed information about the merge stage
+        outputReport:
+          type: string
+          description: Detailed information about the output stage
+    OverallReport:
+      type: object
+      properties:
+        report:
+          type: string
+          description: Overall summary report
+  responses:
+    ErrorResponse:
+      description: Standard error response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: HTTP status code
+                  message:
+                    type: string
+                    description: Error message
+                  details:
+                    type: string
+                    description: Additional details about the error
