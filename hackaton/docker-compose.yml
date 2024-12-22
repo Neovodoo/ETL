@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+  app:
+    image: ${DOCKER_REGISTRY-}app
+    build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: access-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/accessService
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  proxy:
+    image: nginx:mainline
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+      - "80:80"
+  postgres:
+    build:
+      context: ./database_postgres
+    container_name: postgres
+    env_file:
+      - ./database_postgres/.env
+    ports:
+      - "5432:5432"
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pg@admin.com
+      PGADMIN_DEFAULT_PASSWORD: aaa
+      PGADMIN_LISTEN_PORT: 5050
+    ports:
+      - "5050:5050"

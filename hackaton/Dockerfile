@@ -38,4 +38,4 @@ COPY --from=prepare-production ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=prepare-production ${DEPENDENCY}/BOOT-INF/classes /app
 
 # Set the entrypoint to run the Spring Boot application
-ENTRYPOINT ["java", "-cp", "app:app/lib/*", "org.example.ETLApplication"]
+ENTRYPOINT ["java", "-cp", "app:app/lib/*", "org.example.AccessServiceApplication"]
