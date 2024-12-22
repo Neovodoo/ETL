@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-db
+  namespace: grapes-project
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: lab3_db
+            - name: POSTGRES_USER
+              value: <login>
+            - name: POSTGRES_PASSWORD
+              value: <password>
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          volumeMounts:
+            - name: postgres-init-scripts
+              mountPath: /docker-entrypoint-initdb.d
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-init-scripts
+          configMap:
+            name: postgres-init-scripts
+        - name: postgres-data
+          emptyDir: {}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+  namespace: grapes-project
+data:
+  init.sql: |
+    -- Create the table "customers"
+    CREATE TABLE customers (
+        name VARCHAR(50),
+        surname VARCHAR(50),
+        birth DATE,
+        comment TEXT
+    );
+
+    -- Insert 10 rows into the "customers" table
+    INSERT INTO customers (name, surname, birth, comment) VALUES
+    ('john', 'doe', '1985-06-15', 'loyal customer since 2010'),
+    ('jane', 'smith', '1990-09-22', 'prefers email contact'),
+    ('alice', 'johnson', '1978-12-05', 'vip member'),
+    ('bob', 'williams', '1982-03-17', 'interested in new products'),
+    ('clara', 'brown', '1995-08-30', 'frequent buyer'),
+    ('david', 'jones', '1988-11-12', 'subscribed to newsletter'),
+    ('emma', 'miller', '1992-04-25', 'attended last event'),
+    ('frank', 'davis', '1975-07-19', 'referred by a friend'),
+    ('grace', 'garcia', '1980-02-28', 'prefers phone contact'),
+    ('henry', 'martinez', '1983-10-06', 'interested in discounts');
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: grapes-project
+  labels:
+    app: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
