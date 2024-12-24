@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: access-service
+  namespace: grapes-project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: access-service
+  template:
+    metadata:
+      labels:
+        app: access-service
+    spec:
+      tolerations:
+        - key: "asd2024/interruptible"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: "asd2024/interruptible"
+                    operator: "In"
+                    values:
+                      - "true"
+                  - key: "asd2024/node-group"
+                    operator: "In"
+                    values:
+                      - "user-services"
+      containers:
+        - name: access-service
+          image: gor1311/access-service:latest
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres-service:5432/access_db"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "<login>"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "<password>"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: access-service
+  namespace: grapes-project
+spec:
+  selector:
+    app: access-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8081
+  type: ClusterIP
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: access-service-ingress
+  namespace: grapes-project
+  annotations:
+    # Enable regex in path matching
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    # Rewrite the target by capturing everything after /grapes-project/
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /grapes-project/(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: access-service
+                port:
+                  number: 80
